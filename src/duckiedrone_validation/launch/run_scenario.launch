@@ -1,0 +1,353 @@
+<?xml version="1.0"?>
+<!--
+  run_scenario.launch — one validation / identification run.
+
+  Usage example:
+    roslaunch duckiedrone_validation run_scenario.launch \
+        controller:=pem_excitation \
+        scenario:=S1 \
+        run_id:=902 \
+        pem_channel:=thrust
+
+  Args:
+    controller : pid | mpc | physics_mpc | vstmpc | pem_excitation
+    scenario   : S1 | S2 | S3 | S4 | S5
+    s2_axis    : roll | pitch | yaw   (used only when scenario:=S2)
+    run_id     : numeric repetition index
+    mismatch   : true only for S5
+    use_bridge : true -> /gazebo/model_states -> /odom
+
+  PEM excitation controller is currently intended for S1 fixed-hover
+  identification experiments only.
+
+  Prereq:
+    Gazebo DD21 world is already running.
+-->
+
+<launch>
+
+  <!-- ============================================================= -->
+  <!-- General validation arguments                                  -->
+  <!-- ============================================================= -->
+
+  <arg name="controller" default="pid"/>
+  <arg name="scenario"   default="S1"/>
+  <arg name="s2_axis"    default="roll"/>
+  <arg name="run_id"     default="1"/>
+  <arg name="mismatch"   default="false"/>
+  <arg name="use_bridge" default="true"/>
+
+
+  <!-- ============================================================= -->
+  <!-- PEM identification arguments                                  -->
+  <!-- ============================================================= -->
+
+  <arg name="pem_channel"     default="thrust"/>
+  <arg name="pem_amplitude"   default="0.30"/>
+  <arg name="pem_dwell"       default="0.10"/>
+  <arg name="pem_pre_hover"   default="5.0"/>
+  <arg name="pem_duration"    default="15.0"/>
+  <arg name="pem_seed"        default="25"/>
+  <arg name="pem_hover_z"     default="1.5"/>
+
+  <!-- Conditions required before excitation -->
+  <arg name="pem_ref_z_tol"   default="0.01"/>
+  <arg name="pem_state_z_tol" default="0.10"/>
+  <arg name="pem_vz_tol"      default="0.15"/>
+  <arg name="pem_angle_tol"   default="0.10"/>
+
+  <!-- Identification safety envelope -->
+  <arg name="pem_safety_angle"   default="0.20"/>
+  <arg name="pem_safety_z_error" default="0.35"/>
+  <arg name="pem_safety_vz"      default="1.00"/>
+
+  <!-- ============================================================= -->
+  <!-- PEM MIMO excitation -->
+  <!-- ============================================================= -->
+
+  <arg name="pem_mimo_thrust_amplitude" default="0.30"/>
+  <arg name="pem_mimo_roll_amplitude"   default="0.010"/>
+  <arg name="pem_mimo_pitch_amplitude"  default="0.010"/>
+  <arg name="pem_mimo_yaw_amplitude"    default="0.005"/>
+
+  <arg name="pem_mimo_thrust_seed" default="42"/>
+  <arg name="pem_mimo_roll_seed"   default="85"/>
+  <arg name="pem_mimo_pitch_seed"  default="171"/>
+  <arg name="pem_mimo_yaw_seed"    default="255"/>
+
+
+  <!-- ============================================================= -->
+  <!-- Parameters                                                    -->
+  <!-- ============================================================= -->
+
+  <!-- nominal or mismatched plant model seen by controllers -->
+  <rosparam command="load"
+            ns="/"
+            file="$(find duckiedrone_validation)/config/dd21_params.yaml"
+            unless="$(arg mismatch)"/>
+
+  <rosparam command="load"
+            ns="/"
+            file="$(find duckiedrone_validation)/config/dd21_params_mismatched.yaml"
+            if="$(arg mismatch)"/>
+
+  <rosparam command="load"
+            ns="/"
+            file="$(find duckiedrone_validation)/config/pid_gains.yaml"/>
+
+  <rosparam command="load"
+            ns="/"
+            file="$(find duckiedrone_validation)/config/mpc_params.yaml"/>
+
+  <rosparam command="load"
+            ns="/"
+            file="$(find duckiedrone_validation)/config/vstmpc_params.yaml"/>
+
+
+  <!-- ============================================================= -->
+  <!-- Ground-truth odometry bridge                                  -->
+  <!-- ============================================================= -->
+
+  <node pkg="duckiedrone_validation"
+        type="odom_bridge.py"
+        name="odom_bridge"
+        output="screen"
+        if="$(arg use_bridge)"/>
+
+
+  <!-- ============================================================= -->
+  <!-- Controllers — exactly one active                              -->
+  <!-- ============================================================= -->
+
+
+  <!-- ============================================================= -->
+  <!-- Standard cascaded PID                                         -->
+  <!-- ============================================================= -->
+
+  <node pkg="duckiedrone_validation"
+        type="pid_controller.py"
+        name="pid_controller"
+        output="screen"
+        if="$(eval arg('controller') == 'pid' and arg('scenario') != 'S2')"/>
+
+
+  <!-- ============================================================= -->
+  <!-- S2 attitude-step PID                                          -->
+  <!-- ============================================================= -->
+
+  <node pkg="duckiedrone_validation"
+        type="pid_controller_S2.py"
+        name="pid_controller"
+        output="screen"
+        if="$(eval arg('controller') == 'pid' and arg('scenario') == 'S2')">
+
+    <param name="attitude_only" value="true"/>
+
+  </node>
+
+
+  <!-- ============================================================= -->
+  <!-- Legacy MPC                                                    -->
+  <!-- ============================================================= -->
+
+  <node pkg="duckiedrone_validation"
+        type="mpc_controller.py"
+        name="mpc_controller"
+        output="screen"
+        if="$(eval arg('controller') == 'mpc')"/>
+
+  <!-- ============================================================= -->
+  <!-- PEM MPC                                                       -->
+  <!-- ============================================================= -->
+
+  <node pkg="duckiedrone_validation"
+        type="pem_mpc_controller.py"
+        name="pem_mpc_controller"
+        output="screen"
+        if="$(eval arg('controller') == 'pem_mpc')"/>
+
+
+  <!-- ============================================================= -->
+  <!-- Physics MPC                                                   -->
+  <!-- ============================================================= -->
+
+  <node pkg="duckiedrone_validation"
+        type="physics_mpc_controller.py"
+        name="physics_mpc_controller"
+        output="screen"
+        if="$(eval arg('controller') == 'physics_mpc')"/>
+
+
+  <!-- ============================================================= -->
+  <!-- VS-TMPC                                                       -->
+  <!-- ============================================================= -->
+
+  <node pkg="duckiedrone_validation"
+        type="vstmpc_controller.py"
+        name="vstmpc_controller"
+        output="screen"
+        if="$(eval arg('controller') == 'vstmpc')"/>
+
+
+  <!-- ============================================================= -->
+  <!-- PEM closed-loop excitation controller                         -->
+  <!--                                                               -->
+  <!-- Current identification implementation is designed for S1      -->
+  <!-- fixed-hover experiments.                                      -->
+  <!-- ============================================================= -->
+
+  <node pkg="duckiedrone_validation"
+        type="pem_excitation_controller.py"
+        name="pem_excitation_controller"
+        output="screen"
+        if="$(eval arg('controller') == 'pem_excitation' and arg('scenario') == 'S1')">
+
+    <param name="channel"
+           value="$(arg pem_channel)"/>
+
+    <param name="amplitude"
+           value="$(arg pem_amplitude)"/>
+
+    <param name="dwell"
+           value="$(arg pem_dwell)"/>
+
+    <param name="pre_hover"
+           value="$(arg pem_pre_hover)"/>
+
+    <param name="duration"
+           value="$(arg pem_duration)"/>
+
+    <param name="seed"
+           value="$(arg pem_seed)"/>
+
+    <param name="hover_z"
+           value="$(arg pem_hover_z)"/>
+
+
+    <!-- Stable-hover detection -->
+
+    <param name="ref_z_tol"
+           value="$(arg pem_ref_z_tol)"/>
+
+    <param name="state_z_tol"
+           value="$(arg pem_state_z_tol)"/>
+
+    <param name="vz_tol"
+           value="$(arg pem_vz_tol)"/>
+
+    <param name="angle_tol"
+           value="$(arg pem_angle_tol)"/>
+
+
+    <!-- Safety -->
+
+    <param name="safety_angle"
+           value="$(arg pem_safety_angle)"/>
+
+    <param name="safety_z_error"
+           value="$(arg pem_safety_z_error)"/>
+
+    <param name="safety_vz"
+           value="$(arg pem_safety_vz)"/>
+
+  </node>
+
+  <!-- ============================================================= -->
+  <!-- PEM MIMO excitation controller — S1 identification only -->
+  <!-- ============================================================= -->
+
+  <node pkg="duckiedrone_validation"
+        type="pem_mimo_excitation_controller.py"
+        name="pem_mimo_excitation_controller"
+        output="screen"
+        if="$(eval arg('controller') == 'pem_mimo_excitation' and arg('scenario') == 'S1')">
+
+    <!-- Validated MIMO excitation amplitudes -->
+    <param name="thrust_amplitude"
+           value="$(arg pem_mimo_thrust_amplitude)"/>
+
+    <param name="roll_amplitude"
+           value="$(arg pem_mimo_roll_amplitude)"/>
+
+    <param name="pitch_amplitude"
+           value="$(arg pem_mimo_pitch_amplitude)"/>
+
+    <param name="yaw_amplitude"
+           value="$(arg pem_mimo_yaw_amplitude)"/>
+
+    <!-- Validated low-correlation PRBS phases -->
+    <param name="thrust_seed"
+           value="$(arg pem_mimo_thrust_seed)"/>
+
+    <param name="roll_seed"
+           value="$(arg pem_mimo_roll_seed)"/>
+
+    <param name="pitch_seed"
+           value="$(arg pem_mimo_pitch_seed)"/>
+
+    <param name="yaw_seed"
+           value="$(arg pem_mimo_yaw_seed)"/>
+
+    <!-- Same timing as validated SISO experiments -->
+    <param name="dwell"
+           value="$(arg pem_dwell)"/>
+
+    <param name="pre_hover"
+           value="$(arg pem_pre_hover)"/>
+
+    <param name="duration"
+           value="$(arg pem_duration)"/>
+
+    <param name="hover_z"
+           value="$(arg pem_hover_z)"/>
+
+    <!-- Same stable-hover gate -->
+    <param name="ref_z_tol"
+           value="$(arg pem_ref_z_tol)"/>
+
+    <param name="state_z_tol"
+           value="$(arg pem_state_z_tol)"/>
+
+    <param name="vz_tol"
+           value="$(arg pem_vz_tol)"/>
+
+    <param name="angle_tol"
+           value="$(arg pem_angle_tol)"/>
+
+    <!-- Same safety limits -->
+    <param name="safety_angle"
+           value="$(arg pem_safety_angle)"/>
+
+    <param name="safety_z_error"
+           value="$(arg pem_safety_z_error)"/>
+
+    <param name="safety_vz"
+           value="$(arg pem_safety_vz)"/>
+
+  </node>
+
+
+  <!-- ============================================================= -->
+  <!-- Scenario runner                                               -->
+  <!-- ============================================================= -->
+
+  <node pkg="duckiedrone_validation"
+        type="scenario_runner.py"
+        name="scenario_runner"
+        output="screen">
+
+    <param name="controller"
+           value="$(arg controller)"/>
+
+    <param name="scenario"
+           value="$(arg scenario)"/>
+
+    <param name="s2_axis"
+           value="$(arg s2_axis)"/>
+
+    <param name="run_id"
+           value="$(arg run_id)"/>
+
+  </node>
+
+</launch>

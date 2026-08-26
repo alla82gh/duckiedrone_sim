@@ -1,0 +1,38 @@
+# ============================================================
+# VS-TMPC parameters — thesis Table 4.2 (row "VS-TMPC")
+# Algorithm per Chapter 3, Section 3.6 (Algorithm 1):
+#   Sigma_{i+1} = A Sigma_i A^T + Sigma_GP,i      (Eq. 3.42)
+#   gamma = sqrt(lambda_max(Sigma))               (Eq. 3.44)
+#   r = r_min + alpha * gamma, clipped to [r_min, r_max]  (Eqs. 3.46-3.47)
+#   nominal MPC with constraints tightened by r
+# Values are STARTING POINTS; report tuned values in Table 4.2 [TO FILL].
+# ============================================================
+
+vstmpc:
+  # inherits horizon/weights from mpc_params.yaml; override here if needed
+  use_mpc_weights: true
+
+  # --- Tube scheduling (Eqs. 3.46-3.47) ---
+  r_min: 0.02             # [state units] minimal tube radius (numerical floor)
+  r_max: 0.30             # [state units] maximal tube radius (safety cap)
+  alpha: 1.0              # tube sensitivity gain  [TO FILL after tuning]
+
+  # --- Which state channels the tube tightens ---
+  tighten_attitude: true  # tighten |phi|,|theta| bounds by r
+  tighten_position: true  # tighten |z| bound by r
+  tighten_input: false    # usually left false; thrust/torque bounds kept physical
+
+  # --- Terminal weight scaling with confidence (optional) ---
+  terminal_confidence_scaling: false
+  P_gamma_gain: 0.0
+
+  # --- GP uncertainty surrogate (replace with your trained GP from Ch.2!) ---
+  # mode "constant": Sigma_GP = sigma2 * I
+  # mode "regime":   sigma2 grows with |attitude| and |rates| (mimics Ch.2 finding:
+  #                  uncertainty grows in high-dynamic regimes, shrinks in hover)
+  # mode "trained":  load a pickled GP (scripts/models/gp_uncertainty.py) [TO FILL path]
+  gp:
+    mode: "regime"
+    sigma2_base: 1.0e-6   # base variance (hover-calibrated)
+    sigma2_dyn:  5.0e-5   # added variance at |att|=0.3 rad, |rate|=1 rad/s
+    pickle_path: ""       # [TO FILL: path to trained GP pickle when mode: trained]

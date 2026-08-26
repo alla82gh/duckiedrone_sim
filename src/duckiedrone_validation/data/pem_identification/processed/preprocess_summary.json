@@ -1,0 +1,535 @@
+{
+  "model": "dx[k+1] = A_PEM dx[k] + B_PEM du[k]",
+  "Ts": 0.01,
+  "state_order": [
+    "x",
+    "y",
+    "z",
+    "phi",
+    "theta",
+    "psi",
+    "vx",
+    "vy",
+    "vz",
+    "p",
+    "q",
+    "r"
+  ],
+  "input_order": [
+    "T",
+    "tau_phi",
+    "tau_theta",
+    "tau_psi"
+  ],
+  "T_hover_nominal": 6.22935,
+  "trim_strategy": "per-run empirical operating point from phase-1 stable pre-hover",
+  "state_synchronization": "linear interpolation",
+  "input_synchronization": "zero-order hold",
+  "transition_policy": "transitions formed inside each run before concatenation",
+  "training": {
+    "group": "training",
+    "runs": [
+      "pem_train_thrust_01",
+      "pem_train_roll_01",
+      "pem_train_pitch_01",
+      "pem_train_yaw_01",
+      "pem_train_mimo_01"
+    ],
+    "segment_lengths": [
+      1497,
+      1497,
+      1497,
+      1497,
+      1497
+    ],
+    "total_transitions": 7485,
+    "X_k_shape": [
+      7485,
+      12
+    ],
+    "U_k_shape": [
+      7485,
+      4
+    ],
+    "X_kp1_shape": [
+      7485,
+      12
+    ],
+    "file": "/home/abdou/duckiedrone_sim/src/duckiedrone_validation/data/pem_identification/processed/pem_train_dataset.npz"
+  },
+  "validation": {
+    "group": "validation",
+    "runs": [
+      "pem_val_mimo_01"
+    ],
+    "segment_lengths": [
+      1497
+    ],
+    "total_transitions": 1497,
+    "X_k_shape": [
+      1497,
+      12
+    ],
+    "U_k_shape": [
+      1497,
+      4
+    ],
+    "X_kp1_shape": [
+      1497,
+      12
+    ],
+    "file": "/home/abdou/duckiedrone_sim/src/duckiedrone_validation/data/pem_identification/processed/pem_val_dataset.npz"
+  },
+  "runs": [
+    {
+      "run_name": "pem_train_thrust_01",
+      "role": "training",
+      "Ts": 0.01,
+      "state_order": [
+        "x",
+        "y",
+        "z",
+        "phi",
+        "theta",
+        "psi",
+        "vx",
+        "vy",
+        "vz",
+        "p",
+        "q",
+        "r"
+      ],
+      "input_order": [
+        "T",
+        "tau_phi",
+        "tau_theta",
+        "tau_psi"
+      ],
+      "phase1_prehover_raw": {
+        "t0": 2075.807,
+        "t1": 2080.794,
+        "duration": 4.98700000000008
+      },
+      "phase2_active_raw": {
+        "t0": 2080.818,
+        "t1": 2095.794,
+        "duration": 14.975999999999658
+      },
+      "synchronized": {
+        "prehover_samples": 499,
+        "active_samples": 1498,
+        "transitions": 1497
+      },
+      "duplicates_removed": {
+        "state": 0,
+        "input": 0
+      },
+      "x_trim": {
+        "x": 0.05157271076243772,
+        "y": 8.443246201138319e-08,
+        "z": 1.4635997680575004,
+        "phi": 4.12000502756512e-09,
+        "theta": 9.808585207812368e-05,
+        "psi": 5.364612136790549e-10,
+        "vx": -0.0005157342153191724,
+        "vy": 4.045845854128985e-08,
+        "vz": -0.0011794686723899648,
+        "p": -1.3979014095656429e-09,
+        "q": -0.0001983885381774018,
+        "r": 1.994715685436511e-10
+      },
+      "u_trim_phys": {
+        "T": 6.269389076346049,
+        "tau_phi": 4.889265563281166e-11,
+        "tau_theta": -0.000732272917129742,
+        "tau_psi": 1.5784240699184673e-11
+      },
+      "u_trim_nominal": {
+        "T": 0.04003907634604875,
+        "tau_phi": 4.889265563281166e-11,
+        "tau_theta": -0.000732272917129742,
+        "tau_psi": 1.5784240699184673e-11
+      },
+      "rotor_feasibility": {
+        "rotor_zero_count": 0,
+        "rotor_max_count": 0
+      },
+      "processed_file": "/home/abdou/duckiedrone_sim/src/duckiedrone_validation/data/pem_identification/processed/pem_train_thrust_01/processed.npz"
+    },
+    {
+      "run_name": "pem_train_roll_01",
+      "role": "training",
+      "Ts": 0.01,
+      "state_order": [
+        "x",
+        "y",
+        "z",
+        "phi",
+        "theta",
+        "psi",
+        "vx",
+        "vy",
+        "vz",
+        "p",
+        "q",
+        "r"
+      ],
+      "input_order": [
+        "T",
+        "tau_phi",
+        "tau_theta",
+        "tau_psi"
+      ],
+      "phase1_prehover_raw": {
+        "t0": 2500.189,
+        "t1": 2505.176,
+        "duration": 4.98700000000008
+      },
+      "phase2_active_raw": {
+        "t0": 2505.195,
+        "t1": 2520.176,
+        "duration": 14.980999999999767
+      },
+      "synchronized": {
+        "prehover_samples": 499,
+        "active_samples": 1498,
+        "transitions": 1497
+      },
+      "duplicates_removed": {
+        "state": 0,
+        "input": 2
+      },
+      "x_trim": {
+        "x": 0.052362726883781005,
+        "y": -1.7979304541801868e-08,
+        "z": 1.463433885090203,
+        "phi": -1.6482635100732247e-09,
+        "theta": 8.195472610234846e-05,
+        "psi": 7.556317249388042e-10,
+        "vx": -0.0007998077040932996,
+        "vy": -1.0947347196279537e-09,
+        "vz": -0.0011269795812384705,
+        "p": -3.8050396690156426e-09,
+        "q": -0.00018773744804179797,
+        "r": -5.459268224082051e-10
+      },
+      "u_trim_phys": {
+        "T": 6.269277806001942,
+        "tau_phi": 1.438672893570532e-10,
+        "tau_theta": -0.0007383026897550992,
+        "tau_psi": 5.28137559791605e-12
+      },
+      "u_trim_nominal": {
+        "T": 0.03992780600194212,
+        "tau_phi": 1.438672893570532e-10,
+        "tau_theta": -0.0007383026897550992,
+        "tau_psi": 5.28137559791605e-12
+      },
+      "rotor_feasibility": {
+        "rotor_zero_count": 0,
+        "rotor_max_count": 0
+      },
+      "processed_file": "/home/abdou/duckiedrone_sim/src/duckiedrone_validation/data/pem_identification/processed/pem_train_roll_01/processed.npz"
+    },
+    {
+      "run_name": "pem_train_pitch_01",
+      "role": "training",
+      "Ts": 0.01,
+      "state_order": [
+        "x",
+        "y",
+        "z",
+        "phi",
+        "theta",
+        "psi",
+        "vx",
+        "vy",
+        "vz",
+        "p",
+        "q",
+        "r"
+      ],
+      "input_order": [
+        "T",
+        "tau_phi",
+        "tau_theta",
+        "tau_psi"
+      ],
+      "phase1_prehover_raw": {
+        "t0": 2763.111,
+        "t1": 2768.099,
+        "duration": 4.988000000000284
+      },
+      "phase2_active_raw": {
+        "t0": 2768.117,
+        "t1": 2783.098,
+        "duration": 14.980999999999767
+      },
+      "synchronized": {
+        "prehover_samples": 498,
+        "active_samples": 1498,
+        "transitions": 1497
+      },
+      "duplicates_removed": {
+        "state": 0,
+        "input": 0
+      },
+      "x_trim": {
+        "x": 0.052300074325139646,
+        "y": -0.0002726705691270743,
+        "z": 1.463315308970505,
+        "phi": -2.4544783820882878e-05,
+        "theta": 9.3531406277352e-05,
+        "psi": 2.338383355377872e-07,
+        "vx": -0.0010062043382754078,
+        "vy": 0.00010651190666624013,
+        "vz": -0.0007731151912630558,
+        "p": 2.4253464208557515e-05,
+        "q": -0.0001652044364792634,
+        "r": -2.4647550034640324e-08
+      },
+      "u_trim_phys": {
+        "T": 6.269257281384815,
+        "tau_phi": -2.958904792779852e-08,
+        "tau_theta": -0.0007368231686722502,
+        "tau_psi": 5.51030569032852e-11
+      },
+      "u_trim_nominal": {
+        "T": 0.039907281384814475,
+        "tau_phi": -2.958904792779852e-08,
+        "tau_theta": -0.0007368231686722502,
+        "tau_psi": 5.51030569032852e-11
+      },
+      "rotor_feasibility": {
+        "rotor_zero_count": 0,
+        "rotor_max_count": 0
+      },
+      "processed_file": "/home/abdou/duckiedrone_sim/src/duckiedrone_validation/data/pem_identification/processed/pem_train_pitch_01/processed.npz"
+    },
+    {
+      "run_name": "pem_train_yaw_01",
+      "role": "training",
+      "Ts": 0.01,
+      "state_order": [
+        "x",
+        "y",
+        "z",
+        "phi",
+        "theta",
+        "psi",
+        "vx",
+        "vy",
+        "vz",
+        "p",
+        "q",
+        "r"
+      ],
+      "input_order": [
+        "T",
+        "tau_phi",
+        "tau_theta",
+        "tau_psi"
+      ],
+      "phase1_prehover_raw": {
+        "t0": 3051.29,
+        "t1": 3056.278,
+        "duration": 4.987999999999829
+      },
+      "phase2_active_raw": {
+        "t0": 3056.298,
+        "t1": 3071.278,
+        "duration": 14.980000000000018
+      },
+      "synchronized": {
+        "prehover_samples": 499,
+        "active_samples": 1498,
+        "transitions": 1497
+      },
+      "duplicates_removed": {
+        "state": 0,
+        "input": 0
+      },
+      "x_trim": {
+        "x": 0.05263299504023892,
+        "y": 9.467481551975726e-07,
+        "z": 1.463329618324057,
+        "phi": 7.191417500355238e-08,
+        "theta": 4.888901039725332e-05,
+        "psi": 5.879189472616065e-08,
+        "vx": -0.0011038041797318912,
+        "vy": -3.1040138787928137e-07,
+        "vz": -0.0017578657534178955,
+        "p": -7.451507311919957e-08,
+        "q": -0.00014736747191951364,
+        "r": -2.9148765361513e-09
+      },
+      "u_trim_phys": {
+        "T": 6.269491120993398,
+        "tau_phi": 4.0033943848318523e-10,
+        "tau_theta": -0.0007358697802438962,
+        "tau_psi": 2.0757934567565206e-11
+      },
+      "u_trim_nominal": {
+        "T": 0.04014112099339773,
+        "tau_phi": 4.0033943848318523e-10,
+        "tau_theta": -0.0007358697802438962,
+        "tau_psi": 2.0757934567565206e-11
+      },
+      "rotor_feasibility": {
+        "rotor_zero_count": 0,
+        "rotor_max_count": 0
+      },
+      "processed_file": "/home/abdou/duckiedrone_sim/src/duckiedrone_validation/data/pem_identification/processed/pem_train_yaw_01/processed.npz"
+    },
+    {
+      "run_name": "pem_train_mimo_01",
+      "role": "training",
+      "Ts": 0.01,
+      "state_order": [
+        "x",
+        "y",
+        "z",
+        "phi",
+        "theta",
+        "psi",
+        "vx",
+        "vy",
+        "vz",
+        "p",
+        "q",
+        "r"
+      ],
+      "input_order": [
+        "T",
+        "tau_phi",
+        "tau_theta",
+        "tau_psi"
+      ],
+      "phase1_prehover_raw": {
+        "t0": 5375.725,
+        "t1": 5380.713,
+        "duration": 4.987999999999374
+      },
+      "phase2_active_raw": {
+        "t0": 5380.735,
+        "t1": 5395.713,
+        "duration": 14.978000000000065
+      },
+      "synchronized": {
+        "prehover_samples": 499,
+        "active_samples": 1498,
+        "transitions": 1497
+      },
+      "duplicates_removed": {
+        "state": 0,
+        "input": 2
+      },
+      "x_trim": {
+        "x": 0.051411969958131146,
+        "y": 0.00032064241546862266,
+        "z": 1.4631981127008766,
+        "phi": 2.1606331242317347e-05,
+        "theta": 0.00011425138541157191,
+        "psi": -2.7015414915671797e-07,
+        "vx": -0.0002739539552338359,
+        "vy": -0.0001658986661882922,
+        "vz": -0.0009125157194095418,
+        "p": -2.7230219238439847e-05,
+        "q": -0.00024937561694822057,
+        "r": 3.404880354715107e-08
+      },
+      "u_trim_phys": {
+        "T": 6.269451424013707,
+        "tau_phi": 1.9376575198949178e-07,
+        "tau_theta": -0.0007348882045926376,
+        "tau_psi": 2.940797017428102e-11
+      },
+      "u_trim_nominal": {
+        "T": 0.040101424013706755,
+        "tau_phi": 1.9376575198949178e-07,
+        "tau_theta": -0.0007348882045926376,
+        "tau_psi": 2.940797017428102e-11
+      },
+      "rotor_feasibility": {
+        "rotor_zero_count": 0,
+        "rotor_max_count": 0
+      },
+      "processed_file": "/home/abdou/duckiedrone_sim/src/duckiedrone_validation/data/pem_identification/processed/pem_train_mimo_01/processed.npz"
+    },
+    {
+      "run_name": "pem_val_mimo_01",
+      "role": "validation",
+      "Ts": 0.01,
+      "state_order": [
+        "x",
+        "y",
+        "z",
+        "phi",
+        "theta",
+        "psi",
+        "vx",
+        "vy",
+        "vz",
+        "p",
+        "q",
+        "r"
+      ],
+      "input_order": [
+        "T",
+        "tau_phi",
+        "tau_theta",
+        "tau_psi"
+      ],
+      "phase1_prehover_raw": {
+        "t0": 5850.272,
+        "t1": 5855.26,
+        "duration": 4.988000000000284
+      },
+      "phase2_active_raw": {
+        "t0": 5855.28,
+        "t1": 5870.259,
+        "duration": 14.97900000000027
+      },
+      "synchronized": {
+        "prehover_samples": 499,
+        "active_samples": 1498,
+        "transitions": 1497
+      },
+      "duplicates_removed": {
+        "state": 0,
+        "input": 1
+      },
+      "x_trim": {
+        "x": 0.05113404869734028,
+        "y": 0.0005564108920986068,
+        "z": 1.4631370376345347,
+        "phi": 3.7560651052968826e-05,
+        "theta": 0.00013655474392432882,
+        "psi": -5.909951168789456e-07,
+        "vx": -0.00023468113306070716,
+        "vy": -0.0002505225548049806,
+        "vz": -0.0007406653953482729,
+        "p": -3.989985361829437e-05,
+        "q": -0.0002377168355811949,
+        "r": 6.145637134845259e-08
+      },
+      "u_trim_phys": {
+        "T": 6.269176184367897,
+        "tau_phi": -9.453126075469143e-09,
+        "tau_theta": -0.0007379307682770206,
+        "tau_psi": -6.810111238178844e-11
+      },
+      "u_trim_nominal": {
+        "T": 0.039826184367896644,
+        "tau_phi": -9.453126075469143e-09,
+        "tau_theta": -0.0007379307682770206,
+        "tau_psi": -6.810111238178844e-11
+      },
+      "rotor_feasibility": {
+        "rotor_zero_count": 0,
+        "rotor_max_count": 0
+      },
+      "processed_file": "/home/abdou/duckiedrone_sim/src/duckiedrone_validation/data/pem_identification/processed/pem_val_mimo_01/processed.npz"
+    }
+  ]
+}

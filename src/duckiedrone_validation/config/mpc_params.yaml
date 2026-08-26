@@ -1,0 +1,38 @@
+# ============================================================
+# Conventional MPC parameters — thesis Table 4.2 (row "MPC")
+# Formulation per Chapter 3, Section 3.5: linearized hover model,
+# quadratic cost, box constraints, QP solver (OSQP).
+# Values are STARTING POINTS; report tuned values in Table 4.2 [TO FILL].
+# AUTHOR: Abdallah GHOUL 2026
+# ============================================================
+
+mpc:
+  Np: 20                  # prediction horizon  [TO FILL in thesis after tuning]
+  Nc: 20                  # current Physics MPC core uses Nc = Np
+                          # move blocking for Nc < Np is not implemented yet
+  Ts: 0.01                # sampling time [s] (= 100 Hz)
+
+  # --- Cost weights (diagonal) ---
+  # state order: x y z phi theta psi dx dy dz p q r
+  Q: [5.0, 5.0, 15.0,     # position x y z
+      2.0, 2.0, 1.0,      # attitude phi theta psi
+      0.5, 0.5, 1.0,      # linear velocities
+      0.2, 0.2, 0.2]      # angular rates
+  R: [0.01, 0.1, 0.1, 0.1]           # input u = [T, tphi, ttheta, tpsi]
+  S: [0.05, 0.5, 0.5, 0.5]           # input-rate weight (delta u)
+  P_scale: 10.0          # terminal weight = P_scale * Q
+
+  # --- Solver ---
+  solver: "OSQP"          # answers thesis [CONFIRM: QP solver library] if adopted
+  osqp:
+    rho: 0.1
+    sigma: 1.0e-6
+    max_iter: 300
+    eps_abs: 1.0e-4
+    eps_rel: 1.0e-4
+    warm_start: true
+    polish: true
+
+  # Soft state constraints
+  soft_state_constraints: true
+  slack_weight: 1.0e4

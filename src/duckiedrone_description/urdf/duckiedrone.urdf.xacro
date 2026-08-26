@@ -1,0 +1,215 @@
+<?xml version="1.0"?>
+<robot name="duckiedrone" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:arg name="use_mesh" default="false"/>
+  <xacro:property name="use_mesh" value="$(arg use_mesh)"/>
+
+  <xacro:property name="M_BASE" value="0.527"/>
+  <xacro:property name="M_ROTOR" value="0.027"/>
+  <xacro:property name="DX" value="0.0775"/>
+  <xacro:property name="DY" value="0.1075"/>
+
+  <!-- ================= BASE LINK ================= -->
+  <link name="base_link">
+    <inertial>
+      <mass value="${M_BASE}"/>
+      <!-- uniform box 0.150 x 0.060 x 0.035 m @ 0.527 kg:
+           ixx = m/12 (0.060^2+0.035^2), iyy = m/12 (0.150^2+0.035^2),
+           izz = m/12 (0.150^2+0.060^2) -->
+      <inertia ixx="0.000212" ixy="0.0" ixz="0.0" iyy="0.001042" iyz="0.0" izz="0.001146"/>
+    </inertial>
+    <visual>
+      <geometry>
+                <xacro:if value="${use_mesh}">
+          <!-- real DD21 airframe mesh, pre-transformed: SI units, Z-up, nose +X,
+               origin = base_link (motor centroid, bottom at collision bottom) -->
+          <mesh filename="package://duckiedrone_description/meshes/duckiedrone_base.stl" scale="1 1 1"/>
+        </xacro:if>
+        <xacro:unless value="${use_mesh}">
+          <box size="0.150 0.060 0.035"/>
+        </xacro:unless>
+      </geometry>
+      <xacro:if value="${use_mesh}">
+        <material name="graphite"><color rgba="0.16 0.17 0.20 1.0"/></material>
+      </xacro:if>
+      <xacro:unless value="${use_mesh}">
+        <material name="orange"><color rgba="0.9 0.45 0.1 1.0"/></material>
+      </xacro:unless>
+    </visual>
+    <collision>
+      <geometry><box size="0.150 0.060 0.035"/></geometry>
+    </collision>
+  </link>
+
+  <!-- ================= ROTORS (rectangular X layout) ================= -->
+  <xacro:macro name="rotor" params="name x y">
+    <link name="${name}">
+      <inertial>
+        <mass value="${M_ROTOR}"/>
+        <!-- motor approximated as a small cylinder r=0.015 m h=0.02 m -->
+        <inertia ixx="2.4e-6" ixy="0" ixz="0" iyy="2.4e-6" iyz="0" izz="3.0e-6"/>
+      </inertial>
+            <xacro:unless value="${use_mesh}">
+        <visual>
+          <geometry><cylinder radius="0.055" length="0.01"/></geometry>
+          <material name="gray"><color rgba="0.3 0.3 0.3 1.0"/></material>
+        </visual>
+      </xacro:unless>
+      <collision><geometry><cylinder radius="0.055" length="0.01"/></geometry></collision>
+    </link>
+    <joint name="${name}_joint" type="fixed">
+      <parent link="base_link"/>
+      <child link="${name}"/>
+      <origin xyz="${x} ${y} 0.02" rpy="0 0 0"/>
+    </joint>
+  </xacro:macro>
+
+  <xacro:rotor name="rotor_1" x="${-DX}" y="${-DY}"/>   <!-- M1 rear-right  CW -->
+  <xacro:rotor name="rotor_2" x="${DX}"  y="${-DY}"/>   <!-- M2 front-right CCW -->
+  <xacro:rotor name="rotor_3" x="${-DX}" y="${DY}"/>    <!-- M3 rear-left   CCW -->
+  <xacro:rotor name="rotor_4" x="${DX}"  y="${DY}"/>    <!-- M4 front-left  CW -->
+
+  <!-- ================= SENSOR FRAMES ================= -->
+  <!-- NOTE: Gazebo's URDF->SDF conversion LUMPS fixed-joint child links
+       that have no inertial into their parent, which would drop the
+       <gazebo reference> sensor blocks below. The tiny inertials and the
+       disableFixedJointLumping tags keep the frames (and sensors) alive. -->
+  <link name="imu_link">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="1e-7" ixy="0" ixz="0" iyy="1e-7" iyz="0" izz="1e-7"/>
+    </inertial>
+  </link>
+  <joint name="imu_joint" type="fixed">
+    <parent link="base_link"/><child link="imu_link"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+  <gazebo reference="imu_joint">
+    <disableFixedJointLumping>true</disableFixedJointLumping>
+  </gazebo>
+
+  <link name="tof_link">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="1e-7" ixy="0" ixz="0" iyy="1e-7" iyz="0" izz="1e-7"/>
+    </inertial>
+  </link>
+  <joint name="tof_joint" type="fixed">
+    <parent link="base_link"/><child link="tof_link"/>
+    <!-- +x of tof_link points DOWN (VL53L1X looks at the ground);
+         frame flush with the belly (base half-height = 0.0175 m) -->
+    <origin xyz="0 0 -0.017" rpy="0 1.5707963 0"/>
+  </joint>
+  <gazebo reference="tof_joint">
+    <disableFixedJointLumping>true</disableFixedJointLumping>
+  </gazebo>
+
+  <link name="camera_link">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="1e-7" ixy="0" ixz="0" iyy="1e-7" iyz="0" izz="1e-7"/>
+    </inertial>
+  </link>
+  <joint name="camera_joint" type="fixed">
+    <parent link="base_link"/><child link="camera_link"/>
+    <origin xyz="0.075 0 0" rpy="0 0 0"/>
+  </joint>
+  <gazebo reference="camera_joint">
+    <disableFixedJointLumping>true</disableFixedJointLumping>
+  </gazebo>
+
+  <!-- ================= GAZEBO PLUGINS ================= -->
+  <gazebo>
+    <plugin name="ros_force" filename="libgazebo_ros_force.so">
+      <bodyName>base_link</bodyName>
+      <topicName>/dd21/wrench</topicName>
+    </plugin>
+  </gazebo>
+
+  <!-- IMU (MPU-9250-style): sensor_msgs/Imu on /imu @ 100 Hz
+       NOTE: libgazebo_ros_imu_sensor is a SENSOR plugin — it must be
+       nested INSIDE the <sensor> element, not beside it. -->
+  <gazebo reference="imu_link">
+    <sensor type="imu" name="imu_sensor">
+      <always_on>1</always_on>
+      <update_rate>100</update_rate>
+      <visualize>false</visualize>
+      <imu>
+        <noise><type>gaussian</type>
+          <rate><mean>0.0</mean><stddev>0.0002</stddev><bias_mean>0.0</bias_mean><bias_stddev>0.0</bias_stddev></rate>
+          <accel><mean>0.0</mean><stddev>0.017</stddev><bias_mean>0.0</bias_mean><bias_stddev>0.0</bias_stddev></accel>
+        </noise>
+      </imu>
+      <plugin name="imu_ros" filename="libgazebo_ros_imu_sensor.so">
+        <robotNamespace>/</robotNamespace>
+        <topicName>imu</topicName>
+        <bodyName>imu_link</bodyName>
+        <frameName>imu_link</frameName>
+        <initialOrientationAsReference>false</initialOrientationAsReference>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+  <!-- ToF range (VL53L1X-style): sensor_msgs/Range on /tof_range @ 50 Hz
+       libgazebo_ros_range is also a SENSOR plugin (inside <sensor>). -->
+  <gazebo reference="tof_link">
+    <sensor type="ray" name="tof_sensor">
+      <always_on>1</always_on>
+      <update_rate>50</update_rate>
+      <visualize>false</visualize>
+      <ray>
+        <scan>
+          <horizontal><samples>1</samples><resolution>1</resolution><min_angle>0</min_angle><max_angle>0</max_angle></horizontal>
+          <vertical><samples>1</samples><resolution>1</resolution><min_angle>0</min_angle><max_angle>0</max_angle></vertical>
+        </scan>
+        <range><min>0.02</min><max>4.0</max><resolution>0.001</resolution></range>
+      </ray>
+      <plugin name="tof_ros" filename="libgazebo_ros_range.so">
+        <robotNamespace>/</robotNamespace>
+        <topicName>tof_range</topicName>
+        <frameName>tof_link</frameName>
+        <radiation>ir</radiation>
+        <fov>0.436</fov>
+        <gaussianNoise>0.005</gaussianNoise>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+  <!-- RPi camera (forward): TEMPORARILY DISABLED. The gzserver segfault
+       was most likely caused by this sensor plugin being placed OUTSIDE
+       the <sensor> element (invalid SDF), not by the Intel driver — the
+       Intel CCS warning also appears in successful launches. The block
+       below now has the corrected nesting (plugin INSIDE <sensor>), so
+       it can be re-enabled later to test; the camera is NOT used in
+       validation scenarios S1-S5 (control uses /odom + wrench only). -->
+  <!--
+  <gazebo reference="camera_link">
+    <sensor type="camera" name="rpi_camera">
+      <always_on>1</always_on>
+      <update_rate>30</update_rate>
+      <visualize>false</visualize>
+      <camera>
+        <horizontal_fov>1.09</horizontal_fov>
+        <image><width>640</width><height>480</height><format>R8G8B8</format></image>
+        <clip><near>0.05</near><far>10.0</far></clip>
+      </camera>
+      <plugin name="camera_ros" filename="libgazebo_ros_camera.so">
+        <robotNamespace>/</robotNamespace>
+        <cameraName>camera</cameraName>
+        <imageTopicName>image_raw</imageTopicName>
+        <cameraInfoTopicName>camera_info</cameraInfoTopicName>
+        <frameName>camera_link</frameName>
+        <hack_baseline>0.0</hack_baseline>
+      </plugin>
+    </sensor>
+  </gazebo>
+  -->
+
+  <!-- materials -->
+  <gazebo reference="base_link"><material>Gazebo/Orange</material></gazebo>
+  <gazebo reference="rotor_1"><material>Gazebo/Gray</material></gazebo>
+  <gazebo reference="rotor_2"><material>Gazebo/Gray</material></gazebo>
+  <gazebo reference="rotor_3"><material>Gazebo/Gray</material></gazebo>
+  <gazebo reference="rotor_4"><material>Gazebo/Gray</material></gazebo>
+
+</robot>

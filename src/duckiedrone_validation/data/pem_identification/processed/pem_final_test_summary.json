@@ -1,0 +1,12 @@
+{
+  "dataset": "pem_test_mimo_01",
+  "dataset_role": "FINAL UNTOUCHED TEST",
+  "model_tuning_on_final_test": false,
+  "locked_candidate_sha256": "3bbde4b14d80aca830a9b6bc197c5429b501a3d13702e49935e716505d2f67a1",
+  "primary_endpoint": "rolling trajectory mean FIT at H=20",
+  "FULL_OLS_H20_mean_fit_percent": 88.38287401259937,
+  "LOCKED_IV_PQ_H20_mean_fit_percent": 93.61093116161543,
+  "H20_improvement_percentage_points": 5.228057149016053,
+  "final_predeclared_pass": true,
+  "result_file": "/home/abdou/duckiedrone_sim/src/duckiedrone_validation/data/pem_identification/processed/pem_final_test_results.npz"
+}

@@ -1,0 +1,8 @@
+prefix=/home/abdou/duckiedrone_sim/install
+
+Name: duckiedrone_validation
+Description: Description of duckiedrone_validation
+Version: 1.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

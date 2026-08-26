@@ -1,0 +1,8 @@
+prefix=/home/abdou/duckiedrone_sim/install
+
+Name: duckiedrone_description
+Description: Description of duckiedrone_description
+Version: 1.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>duckiedrone_description</name>
+  <version>1.0.0</version>
+  <description>DD21 quadrotor Gazebo model (URDF + plugins) for the thesis
+  validation twin: base link, 4 rotors (+ configuration), MPU-9250-style IMU,
+  VL53L1X-style ToF range, RPi camera, and a wrench-force interface driven by
+  the /cmd_motors -> /dd21/wrench mixer. Rebuilt after loss of duckiedrone_ws.</description>
+  <maintainer email="author@univ-bechar.dz">A. Ghoul</maintainer>
+  <license>MIT</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <depend>gazebo_ros</depend>
+  <depend>gazebo_plugins</depend>
+  <depend>xacro</depend>
+  <depend>urdf</depend>
+  <export/>
+</package>

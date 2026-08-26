@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>duckiedrone_validation</name>
+  <version>1.0.0</version>
+  <description>Validation campaign package for the Duckiedrone DD21 thesis (Chapter 4):
+  cascade PID, conventional MPC, and VS-TMPC controllers; scenarios S1-S5;
+  metrics RMSE/IAE/settling/overshoot/effort/computation time per thesis Eqs. (4.1)-(4.5).</description>
+  <maintainer email="author@univ-bechar.dz">A. Ghoul</maintainer>
+  <license>MIT</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <depend>rospy</depend>
+  <depend>std_msgs</depend>
+  <depend>geometry_msgs</depend>
+  <depend>nav_msgs</depend>
+  <depend>sensor_msgs</depend>
+  <depend>gazebo_msgs</depend>
+  <depend>rosbag</depend>
+
+  <export/>
+</package>

@@ -1,0 +1,2 @@
+duckiedrone_description:duckiedrone_validation
+-DCATKIN_DEVEL_PREFIX=/home/abdou/duckiedrone_sim/devel -DCMAKE_INSTALL_PREFIX=/home/abdou/duckiedrone_sim/install -G Unix Makefiles

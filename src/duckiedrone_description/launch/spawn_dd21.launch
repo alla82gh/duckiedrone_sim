@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="use_mesh" default="true"/>   
+  <!-- real DD21 mesh now available; set false to fall back to primitives -->
+  <arg name="paused"   default="false"/>
+  <arg name="x" default="0"/>
+  <arg name="y" default="0"/>
+  <arg name="z" default="0.05"/>
+
+  <!-- empty world (ODE physics) -->
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="paused" value="$(arg paused)"/>
+    <arg name="use_sim_time" value="true"/>
+    <arg name="gui" value="true"/>
+    <arg name="headless" value="false"/>
+    <arg name="debug" value="false"/>
+  </include>
+
+  <!-- model description -->
+  <param name="dd21_urdf"
+         command="$(find xacro)/xacro $(find duckiedrone_description)/urdf/duckiedrone.urdf.xacro use_mesh:=$(arg use_mesh)"/>
+
+  <!-- TRUE plant parameters under /dd21_plant: the mixer is part of the
+       plant (like the real DD21 firmware) and must ALWAYS use the true
+       parameters. Controllers read /dd21 (nominal or mismatched for S5)
+       from run_scenario.launch. -->
+  <rosparam command="load" ns="/dd21_plant"
+      file="$(find duckiedrone_validation)/config/dd21_params.yaml"/>
+
+  <!-- allocation layer: /cmd_motors -> /dd21/wrench + /enable_motors -->
+  <node name="mixer_node" pkg="duckiedrone_validation" type="mixer_node.py"
+        output="screen"/>
+
+  <!-- spawn (model name = 'duckiedrone' -> matches dd21_params.yaml) -->
+  <node name="spawn_dd21" pkg="gazebo_ros" type="spawn_model"
+        args="-urdf -param dd21_urdf -model duckiedrone -x $(arg x) -y $(arg y) -z $(arg z)"
+        output="screen"/>
+</launch>

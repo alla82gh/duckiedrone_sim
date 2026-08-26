@@ -1,0 +1,40 @@
+# ============================================================
+# MISMATCHED parameters for scenario S5 (thesis Section 4.2.4):
+# the CONTROLLERS see this wrong model while the Gazebo plant keeps the
+# true parameters -> controlled model-plant mismatch.
+# Defaults: mass +20%, inertia -20% [TO FILL: final mismatch levels].
+# Loaded INSTEAD of dd21_params.yaml when run_scenario.launch mismatch:=true
+# ============================================================
+
+dd21:
+  mass: 1.2               # +20% vs nominal 1.0  [ADAPT to your nominal]
+  Ixx: 0.008              # -20%
+  Iyy: 0.008              # -20%
+  Izz: 0.016              # -20%
+  arm_length: 0.12
+  k_f: 8.54858e-06
+  k_m: 1.0e-07
+  max_rotor_velocity: 1000.0
+  gravity: 9.81
+  T_max: 20.0
+  T_min: 0.0
+  tau_max: 0.5
+  du_max: 5.0
+  du_max_vec: [0.5, 0.05, 0.05, 0.05]
+  phi_max: 0.35
+  theta_max: 0.35
+  z_max: 3.0
+  control_rate: 100.0
+
+topics:
+  odom: "/odom"
+  cmd_motors: "/cmd_motors"
+  cmd_ref: "/cmd_ref"
+  enable_motors: "/enable_motors"
+  use_enable_service: true
+  diagnostics: "/diagnostics"
+  wrench: "/dd21/wrench"
+
+gazebo:
+  model_name: "duckiedrone"
+  use_model_states_bridge: true

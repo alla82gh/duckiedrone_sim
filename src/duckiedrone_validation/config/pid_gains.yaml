@@ -1,0 +1,41 @@
+# ============================================================
+# Cascade PID gains — thesis Table 4.2 (row "PID")
+# Structure per Chapter 3, Section 3.4: outer position loop -> attitude
+# references; inner attitude loop -> torques.
+# Values below are SAFE STARTING POINTS for the DD21 twin, to be tuned;
+# the tuned values are then reported in thesis Table 4.2 [TO FILL].
+# ============================================================
+
+pid:
+  # --- Outer loop: position -> attitude/thrust references ---
+  pos_xy:
+    kp: 0.8
+    ki: 0.0
+    kd: 0.6
+  pos_z:
+    kp: 1.5
+    ki: 0.05
+    kd: 0.9
+  yaw:
+    kp: 1.0
+    ki: 0.0
+    kd: 0.3
+
+  # --- Inner loop: attitude -> torques ---
+  att_phi:
+    kp: 0.12
+    ki: 0.005
+    kd: 0.02
+  att_theta:
+    kp: 0.12
+    ki: 0.005
+    kd: 0.02
+  att_psi:
+    kp: 0.20
+    ki: 0.01
+    kd: 0.03
+
+  # --- Limits ---
+  attitude_ref_max: 0.30     # [rad] max commanded roll/pitch from outer loop
+  integral_max: 1.0          # anti-windup clamp (per channel, SI units)
+  thrust_ff: true            # add m*g feedforward on T

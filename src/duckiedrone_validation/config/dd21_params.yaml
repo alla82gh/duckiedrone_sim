@@ -1,0 +1,51 @@
+# ============================================================
+# Duckiedrone DD21 physical & interface parameters
+# Thesis Chapter 4, Section 4.2 — validation platform
+# Values marked [CONFIRM] must be checked against your model.
+# AUTHOR: Abdallah GHOUL 2026
+# ============================================================
+
+dd21:
+  # --- Physical parameters (from your DD21 estimation session) ---
+  mass: 0.635             # [kg]  [CONFIRM: measured total mass]
+  Ixx:  0.0015            # [kg m^2] [CONFIRM: from your inertia estimation]
+  Iyy:  0.0017            # [kg m^2] [CONFIRM]
+  Izz:  0.0030            # [kg m^2] [CONFIRM]
+  arm_length: 0.1075      # [m] center->rotor distance [CONFIRM]
+  k_f: 8.54858e-06        # rotor thrust coefficient  T_i = k_f * w_i^2  (from your estimation)
+  k_m: 1.0e-07            # rotor moment coefficient  tau_i = k_m * w_i^2 [CONFIRM: from your estimation]
+  max_rotor_velocity: 1000.0   # [rad/s] (from your estimation)
+  gravity: 9.81           # [m/s^2]
+
+  # --- Actuator limits (thrust/torque domain, used by all controllers) ---
+  T_max: 18.0             # [N] total thrust upper bound [CONFIRM: ~ 4*k_f*wmax^2]
+  T_min: 0.0              # [N]
+  tau_max: 0.5            # [N m] per-axis torque bound [CONFIRM]
+  du_max: 5.0             # max |delta u| per step (N / N m) [CONFIRM]
+  du_max_vec: [0.5, 0.05, 0.05, 0.05]
+
+  # --- State constraints (used by MPC / VS-TMPC) ---
+  phi_max: 0.35           # [rad] ~ 20 deg  [CONFIRM]
+  theta_max: 0.35         # [rad]           [CONFIRM]
+  z_max: 3.0              # [m]
+
+  # --- Timing ---
+  control_rate: 100.0     # [Hz] [CONFIRM: final loop rate; nominal 100 Hz]
+
+# --- ROS interface (per thesis Figure 4.1) ---
+topics:
+  odom: "/odom"                     # nav_msgs/Odometry state input [ADAPT: your sim's odom topic,
+                                    # e.g. /duckiedrone/odom or use the included odom_bridge]
+  cmd_motors: "/cmd_motors"         # std_msgs/Float32MultiArray (4 rotor velocities, rad/s)
+                                    # [ADAPT: if your model expects normalized PWM 0..1 or a
+                                    #  different topic (e.g. /duckiedrone/cmd_motors), change here]
+  cmd_ref: "/cmd_ref"               # geometry_msgs/Twist (informational; runner publishes pose refs separately)
+  enable_motors: "/enable_motors"   # std_srvs/SetBool — provided by mixer_node.py
+  use_enable_service: true          # controllers auto-arm at startup; set false if no service
+  diagnostics: "/diagnostics"       # diagnostic_msgs/DiagnosticArray (controller status)
+  wrench: "/dd21/wrench"            # geometry_msgs/Wrench — mixer -> gazebo_ros_force plugin
+
+gazebo:
+  model_name: "duckiedrone"         # [ADAPT: model name as spawned in Gazebo, for /gazebo/model_states
+                                    #  bridge and ApplyBodyWrench disturbances]
+  use_model_states_bridge: true     # true: state comes from /gazebo/model_states via odom_bridge.py

@@ -1,0 +1,108 @@
+{
+  "status": "candidate \u2014 requires held-out validation",
+  "model": "dx[k+1] = A_PEM dx[k] + B_PEM du[k] + w[k]",
+  "estimator": "ordinary least squares",
+  "intercept": false,
+  "training_only": true,
+  "Ts": 0.01,
+  "nx": 12,
+  "nu": 4,
+  "n_training_transitions": 7485,
+  "regression_rank": 16,
+  "spectral_radius": 1.0000391692515358,
+  "state_names": [
+    "x",
+    "y",
+    "z",
+    "phi",
+    "theta",
+    "psi",
+    "vx",
+    "vy",
+    "vz",
+    "p",
+    "q",
+    "r"
+  ],
+  "input_names": [
+    "dT",
+    "tau_phi",
+    "tau_theta",
+    "tau_psi"
+  ],
+  "training_metrics": {
+    "x": {
+      "rmse": 5.4751041708925184e-05,
+      "mae": 1.3493160678206962e-05,
+      "maxae": 0.0018655965378177597,
+      "fit_percent": 99.96245027774681
+    },
+    "y": {
+      "rmse": 6.982023908620823e-05,
+      "mae": 9.587783233501717e-06,
+      "maxae": 0.0020357247277765778,
+      "fit_percent": 99.95405404131638
+    },
+    "z": {
+      "rmse": 3.9846109917735366e-05,
+      "mae": 1.4153078366951154e-05,
+      "maxae": 0.001454222824686685,
+      "fit_percent": 99.93699718911306
+    },
+    "phi": {
+      "rmse": 0.00017485194869347218,
+      "mae": 6.278796890056372e-05,
+      "maxae": 0.004810525123811374,
+      "fit_percent": 99.45393103414413
+    },
+    "theta": {
+      "rmse": 0.0001382314315011143,
+      "mae": 5.585716262930767e-05,
+      "maxae": 0.00461542270808319,
+      "fit_percent": 99.57057042690991
+    },
+    "psi": {
+      "rmse": 9.227791788362239e-05,
+      "mae": 3.638880158368851e-05,
+      "maxae": 0.0021124494531715565,
+      "fit_percent": 99.03765740916799
+    },
+    "vx": {
+      "rmse": 0.00016545659074925357,
+      "mae": 7.507180081398434e-05,
+      "maxae": 0.00496002320994092,
+      "fit_percent": 99.88373393461875
+    },
+    "vy": {
+      "rmse": 0.0002235716802499738,
+      "mae": 8.128028420814001e-05,
+      "maxae": 0.008981381543819786,
+      "fit_percent": 99.8496452163204
+    },
+    "vz": {
+      "rmse": 0.0006110477718095678,
+      "mae": 0.0003114274883488076,
+      "maxae": 0.008908445391425018,
+      "fit_percent": 99.17620225268587
+    },
+    "p": {
+      "rmse": 0.021195938278432608,
+      "mae": 0.009595377427374477,
+      "maxae": 0.49686724803011045,
+      "fit_percent": 91.26016133533864
+    },
+    "q": {
+      "rmse": 0.01723775337038025,
+      "mae": 0.00810127104071869,
+      "maxae": 0.2663488328371046,
+      "fit_percent": 92.60453542587818
+    },
+    "r": {
+      "rmse": 0.002005579792863166,
+      "mae": 0.0006698204562423996,
+      "maxae": 0.02795049920368317,
+      "fit_percent": 97.14380553707103
+    }
+  },
+  "model_file": "/home/abdou/duckiedrone_sim/src/duckiedrone_validation/data/pem_identification/processed/pem_candidate_model.npz"
+}
