@@ -172,7 +172,4 @@ Current status:
 
 **Abdallah GHOUL**  
 Researcher in quadrotor system identification, modeling, control, and teleoperation.
-
-## License
-
-A license has not yet been specified. Add a `LICENSE` file before redistributing or publishing the repository as reusable software.
+Email: abdallah.ghoul@univ-bechar.dz
