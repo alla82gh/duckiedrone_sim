@@ -81,7 +81,13 @@ Additional disturbance and model-mismatch scenarios are under development.
 
 ## Graphical Interface
 
-A PyQt5 graphical interface is available for launching Gazebo, selecting controllers, selecting validation scenarios, and starting/stopping experiments.
+A PyQt5 graphical interface is available for launching Gazebo, selecting controllers, selecting validation scenarios, monitoring ROS node status, viewing controller logs, and starting/stopping experiments.
+
+### Control Panel Preview
+
+The interface integrates experiment configuration, live ROS status, controller diagnostics, and the Gazebo simulation view in a single workspace.
+
+![Duckiedrone DD21 Control Panel](docs/images/duckiedrone_control_panel.webp)
 
 Main script:
 
