@@ -1,19 +1,4 @@
-# or use any editor
-
-# Look for lines like:
-# <<<<<<< HEAD
-# Your local content
-# =======
-# Remote content
-# >>>>>>> <commit-hash>
-
-# Edit to keep what you want, then save.
-
-# After resolving, add the file:
-git add README.md
-
-# Complete the merge:
-git commit -m "Merge remote changes"# Duckiedrone DD21 Simulation and Control Framework
+# Duckiedrone DD21 Simulation and Control Framework
 
 ROS Noetic + Gazebo simulation framework for the **Duckiedrone DD21** quadrotor, developed for research on system identification, model-based control, uncertainty-aware modeling, and UAV validation.
 
@@ -96,7 +81,13 @@ Additional disturbance and model-mismatch scenarios are under development.
 
 ## Graphical Interface
 
-A PyQt5 graphical interface is available for launching Gazebo, selecting controllers, selecting validation scenarios, and starting/stopping experiments.
+A PyQt5 graphical interface is available for launching Gazebo, selecting controllers, selecting validation scenarios, monitoring ROS node status, viewing controller logs, and starting/stopping experiments.
+
+### Control Panel Preview
+
+The interface integrates experiment configuration, live ROS status, controller diagnostics, and the Gazebo simulation view in a single workspace.
+
+![Duckiedrone DD21 Control Panel](docs/images/duckiedrone_control_panel.webp)
 
 Main script:
 
@@ -187,5 +178,4 @@ Current status:
 
 **Abdallah GHOUL**  
 Researcher in quadrotor system identification, modeling, control, and teleoperation.
-## Email: 
-abdallah.ghoul@univ-bechar.dz
+## Email: abdallah.ghoul@univ-bechar.dz
